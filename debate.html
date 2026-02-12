@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Great Permitting Debate</title>
+<style>
+  :root {
+    --bg: #fafaf8;
+    --text: #1a1a1a;
+    --muted: #555;
+    --border: #d0d0c8;
+    --card-bg: #fff;
+    --sidebar-bg: #f5f5f0;
+    --madison: #9b2226;
+    --madison-light: #fdf0f0;
+    --madison-border: #c1494d;
+    --commons: #1d4e89;
+    --commons-light: #edf2fa;
+    --commons-border: #4a7ab5;
+    --marshall: #5e5030;
+    --marshall-light: #f7f5ee;
+    --marshall-border: #8a7a52;
+    --tension: #7c3aed;
+    --tension-light: #f5f0ff;
+    --consensus: #0d7c5f;
+    --consensus-light: #ecfdf5;
+    --round-bg: #f0ede6;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    font-size: 17px;
+  }
+  .layout { display: flex; min-height: 100vh; }
+  nav {
+    width: 260px;
+    min-width: 260px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    padding: 2rem 1.25rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 13px;
+  }
+  nav h2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  nav a {
+    display: block;
+    color: var(--text);
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin-bottom: 2px;
+    transition: background 0.15s;
+  }
+  nav a:hover { background: #e8e8e0; }
+  nav a.section-head {
+    font-weight: 700;
+    margin-top: 1rem;
+    color: var(--marshall);
+  }
+  nav a.sub { padding-left: 22px; color: var(--muted); font-size: 12px; }
+  .toc-divider { border: none; border-top: 1px solid var(--border); margin: 0.8rem 0; }
+  main {
+    flex: 1;
+    max-width: 880px;
+    padding: 3rem 4rem;
+  }
+  h1 {
+    font-size: 2.6rem;
+    line-height: 1.15;
+    margin-bottom: 0.3rem;
+    letter-spacing: -0.5px;
+  }
+  .subtitle {
+    font-size: 1.1rem;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+    font-style: italic;
+  }
+  h2 {
+    font-size: 1.55rem;
+    margin-top: 3.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--border);
+    letter-spacing: -0.3px;
+  }
+  h3 {
+    font-size: 1.15rem;
+    margin-top: 2rem;
+    margin-bottom: 0.6rem;
+  }
+  p { margin-bottom: 1rem; }
+  ul, ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+  li { margin-bottom: 0.4rem; }
+  strong { font-weight: 700; }
+  a { color: var(--marshall); }
+  hr.section-rule {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2.5rem 0;
+  }
+
+  /* Debater profiles */
+  .debaters {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.2rem;
+    margin: 2rem 0 2.5rem;
+  }
+  .debater-card {
+    border-radius: 8px;
+    padding: 1.3rem 1.2rem;
+    border: 1px solid var(--border);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .debater-card.madison { background: var(--madison-light); border-left: 4px solid var(--madison); }
+  .debater-card.commons { background: var(--commons-light); border-left: 4px solid var(--commons); }
+  .debater-card.marshall { background: var(--marshall-light); border-left: 4px solid var(--marshall); }
+  .debater-name {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.2rem;
+  }
+  .debater-card.madison .debater-name { color: var(--madison); }
+  .debater-card.commons .debater-name { color: var(--commons); }
+  .debater-card.marshall .debater-name { color: var(--marshall); }
+  .debater-meta {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    margin-bottom: 0.7rem;
+  }
+  .debater-card .motto {
+    font-style: italic;
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 0.6rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Round headers */
+  .round-header {
+    background: var(--round-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem 1.8rem;
+    margin: 3rem 0 1.5rem;
+  }
+  .round-label {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+  .round-question {
+    font-size: 1.25rem;
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  /* Speech blocks */
+  .speech {
+    border-radius: 8px;
+    padding: 1.5rem 1.8rem;
+    margin: 1.5rem 0;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .speech.madison { background: var(--madison-light); border-left: 5px solid var(--madison); }
+  .speech.commons { background: var(--commons-light); border-left: 5px solid var(--commons); }
+  .speech.marshall { background: var(--marshall-light); border-left: 5px solid var(--marshall); }
+  .speech-name {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.8rem;
+  }
+  .speech.madison .speech-name { color: var(--madison); }
+  .speech.commons .speech-name { color: var(--commons); }
+  .speech.marshall .speech-name { color: var(--marshall); }
+  .speech p:last-child { margin-bottom: 0; }
+  .speech ol, .speech ul { margin-bottom: 0.8rem; }
+
+  /* Synthesis cards */
+  .tension-card {
+    background: var(--tension-light);
+    border: 1px solid #ddd5f5;
+    border-left: 5px solid var(--tension);
+    border-radius: 8px;
+    padding: 1.5rem 1.8rem;
+    margin: 1.5rem 0;
+  }
+  .tension-card h4 {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--tension);
+    margin-bottom: 0.6rem;
+  }
+  .consensus-card {
+    background: var(--consensus-light);
+    border: 1px solid #d1e7dd;
+    border-left: 5px solid var(--consensus);
+    border-radius: 8px;
+    padding: 1.5rem 1.8rem;
+    margin: 1.5rem 0;
+  }
+  .consensus-card h4 {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--consensus);
+    margin-bottom: 0.6rem;
+  }
+  .subhead {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    margin-top: 1rem;
+    margin-bottom: 0.3rem;
+  }
+  .final-card {
+    background: #1a1a1a;
+    color: #e8e8e0;
+    border-radius: 10px;
+    padding: 2rem 2.2rem;
+    margin: 2.5rem 0;
+    line-height: 1.7;
+  }
+  .final-card strong { color: #fff; }
+  .final-card p:last-child { margin-bottom: 0; }
+
+  @media (max-width: 1100px) {
+    nav { display: none; }
+    main { padding: 2rem 1.5rem; }
+    .debaters { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 700px) {
+    h1 { font-size: 1.8rem; }
+    .speech { padding: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav>
+  <h2>Contents</h2>
+  <a href="#debaters" class="section-head">The Debaters</a>
+  <hr class="toc-divider">
+  <a href="#round1" class="section-head">Round 1: Opening Salvos</a>
+  <a href="#r1-madison" class="sub">Madison</a>
+  <a href="#r1-commons" class="sub">Commons</a>
+  <a href="#r1-marshall" class="sub">Marshall</a>
+  <hr class="toc-divider">
+  <a href="#round2" class="section-head">Round 2: Enforcement</a>
+  <a href="#r2-madison" class="sub">Madison</a>
+  <a href="#r2-commons" class="sub">Commons</a>
+  <a href="#r2-marshall" class="sub">Marshall</a>
+  <hr class="toc-divider">
+  <a href="#round3" class="section-head">Round 3: Environment</a>
+  <a href="#r3-commons" class="sub">Commons</a>
+  <a href="#r3-madison" class="sub">Madison</a>
+  <a href="#r3-marshall" class="sub">Marshall</a>
+  <hr class="toc-divider">
+  <a href="#round4" class="section-head">Round 4: Durability</a>
+  <a href="#r4-madison" class="sub">Madison</a>
+  <a href="#r4-commons" class="sub">Commons</a>
+  <a href="#r4-marshall" class="sub">Marshall</a>
+  <hr class="toc-divider">
+  <a href="#round5" class="section-head">Round 5: Synthesis</a>
+  <a href="#r5-madison" class="sub">Madison</a>
+  <a href="#r5-commons" class="sub">Commons</a>
+  <a href="#r5-marshall" class="sub">Marshall</a>
+  <hr class="toc-divider">
+  <a href="#closings" class="section-head">Closing Statements</a>
+  <hr class="toc-divider">
+  <a href="#synthesis" class="section-head">Synthesis</a>
+  <a href="#tensions" class="sub">Core Tensions</a>
+  <a href="#consensus" class="sub">Areas of Consensus</a>
+  <a href="#ultimate" class="sub">The Ultimate Question</a>
+</nav>
+
+<main>
+
+<h1>The Great Permitting Debate</h1>
+<p class="subtitle">FREEDOM Act vs. CERTAIN Act &mdash; and what the rest of the world figured out while we argued</p>
+
+<!-- ============================================ -->
+<!-- DEBATERS -->
+<!-- ============================================ -->
+
+<h2 id="debaters">The Debaters</h2>
+
+<div class="debaters">
+  <div class="debater-card madison">
+    <div class="debater-name">Madison</div>
+    <div class="debater-meta">Pro-FREEDOM Act &middot; Republican Lean</div>
+    <p style="font-size:14px; margin-bottom:0;">Named for the architect of checks and balances. Sees permitting as a power asymmetry problem: agencies face zero consequences for delay, obstruction, or revocation. Trusts enforceable rights over institutional goodwill. Thinks the executive branch will not reform itself, because why would it?</p>
+    <div class="motto">&ldquo;Give project sponsors weapons they can actually use.&rdquo;</div>
+  </div>
+  <div class="debater-card commons">
+    <div class="debater-name">Commons</div>
+    <div class="debater-meta">Pro-CERTAIN Act &middot; Democrat Lean</div>
+    <p style="font-size:14px; margin-bottom:0;">Named for the idea of shared institutional governance. Sees permitting as a design problem: there has never been a comprehensive statutory framework, so every administration reinvents the rules from scratch. Trusts architecture over weaponry. Worries that enforcement mechanisms can be captured just as easily as the processes they&rsquo;re meant to fix.</p>
+    <div class="motto">&ldquo;Build the rails, then make the train run on them.&rdquo;</div>
+  </div>
+  <div class="debater-card marshall">
+    <div class="debater-name">Marshall</div>
+    <div class="debater-meta">The Broader View &middot; Independent</div>
+    <p style="font-size:14px; margin-bottom:0;">Named for the man who bridged divides through pragmatic action. Refuses to be captured by either bill. Keeps citing the international evidence, which is inconvenient because it keeps being relevant. Both bills are necessary and neither is sufficient.</p>
+    <div class="motto">&ldquo;The rest of the world already solved this. We&rsquo;re arguing over which half-measure to adopt.&rdquo;</div>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ROUND 1 -->
+<!-- ============================================ -->
+
+<div class="round-header" id="round1">
+  <div class="round-label">Round 1</div>
+  <div class="round-question">What is the core problem, and which bill actually solves it?</div>
+</div>
+
+<div class="speech madison" id="r1-madison">
+  <div class="speech-name">Madison</div>
+  <p>Everyone in this room keeps dancing around the central fact, so I&rsquo;ll state it plainly.</p>
+  <p>On August 20, 2025, the President posted on Truth Social: <strong>&ldquo;We will not approve wind or farmer destroying Solar.&rdquo;</strong> Not ambiguity. Not a process failure. A declaration of war against an entire sector of the American economy, issued by the one person who controls every agency that issues every permit.</p>
+  <p>The CERTAIN Act&rsquo;s response to this is: better timelines, concurrent review, and CEQ mediation. CEQ &mdash; the entity whose regulations have been rescinded, whose binding authority two federal courts have called into question, and which reports directly to the President who just declared war on the projects it would be mediating. This isn&rsquo;t asking the fox to guard the henhouse. It&rsquo;s asking the fox to adjudicate the henhouse&rsquo;s complaint about being eaten.</p>
+  <p>The FREEDOM Act grasps something the CERTAIN Act does not: <strong>process reforms are meaningless when the entity controlling the process is the adversary.</strong> You don&rsquo;t fix this with better flowcharts. You fix it with enforceable rights. The de-risking fund, the civil penalties ($1K to $100K per day from agency budgets), the court-approved contractor substitution, the &ldquo;just compensation&rdquo; for unlawful stop-work orders &mdash; these are weapons. They create a cost to obstruction where today no cost exists.</p>
+  <p>Equinor booked a <strong>nearly $1 billion impairment</strong> on Empire Wind &mdash; driven by the stop-work order, steel tariffs, and regulatory uncertainty combined. Under current law, that&rsquo;s the cost of doing business in America. Under the FREEDOM Act, there are consequences. Under the CERTAIN Act, there&rsquo;s a strongly worded letter.</p>
+  <p>The core problem is not that we lack a process. We are <em>drowning</em> in process. We have NEPA. We have FAST-41. We have agency-specific timelines. What we don&rsquo;t have &mdash; what has never existed &mdash; is consequences when the government violates its own rules. The FREEDOM Act provides consequences. The CERTAIN Act provides more process.</p>
+</div>
+
+<div class="speech commons" id="r1-commons">
+  <div class="speech-name">Commons</div>
+  <p>Madison opens with a war story because the FREEDOM Act was designed for war. And the war is real &mdash; the Burgum memo, the offshore wind suspensions, the IPaC blocking. Genuine outrages, every one.</p>
+  <p>But here is what happens when you go to war with your own government: <strong>you lose.</strong> Not because you&rsquo;re wrong. Because the government has infinite resources, infinite patience, and infinite creativity. You can fine an agency $100K a day, and a determined political appointee will wear it as a badge of honor. You can substitute court-approved contractors, and the agency will refuse to hand over the data and models they need. You can take it all to court, and the case will last three years while the project bleeds out.</p>
+  <p>The CERTAIN Act starts from a different diagnosis: <strong>permitting is broken because there has never been a comprehensive statutory framework governing how it actually works.</strong> Every administration makes up the rules as it goes. Biden did it with regulatory expansion. Trump did it with regulatory destruction. The CERTAIN Act says: enough. Here is the framework. Here are the deadlines. Here is the pipeline from application to determination. Here is the coordination structure. Here is the backstop when agencies don&rsquo;t act.</p>
+  <p>But there&rsquo;s something Madison&rsquo;s analysis entirely omits: <strong>coalition breadth.</strong> The CERTAIN Act has drawn support from a broad coalition spanning unions, environmental groups, and clean energy industry &mdash; including organizations like The Nature Conservancy and the Clean Energy Buyers Association that are active in permitting reform. Unions and environmental groups. Industry and conservation. That coalition is what turns a bill into a law. The FREEDOM Act has industry groups and innovation think tanks. That&rsquo;s a bill that gets introduced. Not enacted.</p>
+  <p>The CERTAIN Act&rsquo;s permit-certainty provision is every bit as strong as the FREEDOM Act&rsquo;s: five narrow exceptions, clear-and-convincing evidence standard, anti-vacatur. The difference is it comes wrapped in a framework that environmental groups can support, because it doesn&rsquo;t gut environmental review &mdash; it makes environmental review predictable.</p>
+  <p>And the &ldquo;deemed complete&rdquo; backstop at six months? That&rsquo;s more powerful than anything in the FREEDOM Act for the most common form of obstruction &mdash; agencies sitting on applications in perpetuity. The FREEDOM Act has no deemed-complete provision at all.</p>
+</div>
+
+<div class="speech marshall" id="r1-marshall">
+  <div class="speech-name">Marshall</div>
+  <p>Both of you are arguing about which American half-measure is less inadequate, and I confess I find it dispiriting. Allow me to introduce you to the rest of the world.</p>
+  <p>The Netherlands took <strong>26 separate environmental and planning laws</strong> and consolidated them into a single statute with an 8-week standard timeline. Denmark built a genuine one-stop-shop: one application in, one permit out. South Korea&rsquo;s 2025 Special Act deems <strong>28 permits across 29 different laws</strong> simultaneously granted the moment the primary permit is issued. The EU&rsquo;s RED III imposes <strong>non-pausable deadlines</strong> &mdash; 12 months in acceleration areas, 3 months for solar &mdash; and declares renewables to be of <strong>&ldquo;overriding public interest,&rdquo;</strong> a binding legal standard that shifts the burden in every subsequent court proceeding.</p>
+  <p>Now consider what we&rsquo;re debating. The CERTAIN Act: 90 days for complex authorizations after the environmental document is published, 30 days for routine. The FREEDOM Act: 90 days for routine authorizations, 1 year for complex, 2 years for EIS. These would be the longest permitting timelines in the developed world, and we&rsquo;re treating them as aggressive reform.</p>
+  <p>The international evidence is brutally clear about what fast-permitting countries have in common. Five features. Every country that permits quickly has all five. Every country that permits slowly is missing at least one:</p>
+  <ol>
+    <li><strong>One-stop-shop coordination.</strong> Neither bill creates a true one-stop-shop.</li>
+    <li><strong>Binding statutory timelines with consequences.</strong> The FREEDOM Act has this; the CERTAIN Act does not.</li>
+    <li><strong>Area-based pre-screening.</strong> Neither bill addresses this.</li>
+    <li><strong>Size-based tiering.</strong> Neither bill meaningfully addresses this.</li>
+    <li><strong>Political insulation.</strong> Both bills attempt this, the FREEDOM Act more seriously.</li>
+  </ol>
+  <p>(This is, incidentally, the pattern in most policy debates: intense disagreement about the features that distinguish the two proposals, comfortable silence about the features neither proposal has.)</p>
+  <p>The U.S. takes 2&ndash;7 years to permit onshore wind. Germany, after reform, does it in 18&ndash;30 months. The Netherlands has a statutory decision window of 8 weeks to 6 months under the Omgevingswet. These are not countries that cut corners on environmental protection or rule of law. They&rsquo;ve simply designed systems that work.</p>
+  <p>You&rsquo;re both optimizing the wrong variable. It&rsquo;s as if a hospital required 26 separate consent forms from 14 different departments before every surgery, and the two proposals on the table were debating whether to fine the departments for being slow or give them better scheduling software. The answer is to stop requiring 26 consent forms.</p>
+</div>
+
+<!-- ============================================ -->
+<!-- ROUND 2 -->
+<!-- ============================================ -->
+
+<div class="round-header" id="round2">
+  <div class="round-label">Round 2</div>
+  <div class="round-question">When the government violates its own rules, what should happen?</div>
+</div>
+
+<div class="speech madison" id="r2-madison">
+  <div class="speech-name">Madison</div>
+  <p>Marshall, I hear you on the international models, and I agree we should be more ambitious. But there&rsquo;s a distinction you&rsquo;re eliding, and it&rsquo;s the one that matters most.</p>
+  <p>Germany can mandate 2% land dedication for wind because the German government <em>wants</em> wind to succeed. Denmark&rsquo;s one-stop-shop works because the Danish Energy Agency <em>wants</em> to issue permits. The most elegant system in the world is a dead letter if the person running it has been explicitly told by the President not to approve solar or wind.</p>
+  <p>This is the CERTAIN Act&rsquo;s fatal flaw. Consider what actually happens when an agency misses a deadline:</p>
+  <ol>
+    <li>The agency sends a notification.</li>
+    <li>It sets a new schedule, not exceeding 6 months.</li>
+    <li>The project sponsor gets administrative review by&hellip; a senior career official at the same agency.</li>
+    <li>That&rsquo;s it.</li>
+  </ol>
+  <p>That&rsquo;s the entire enforcement mechanism. A letter, a new schedule, and internal review. An agency engaged in deliberate obstruction can ride this cycle indefinitely &mdash; miss deadline, send letter, set new schedule, miss that one, send another letter, set another new schedule &mdash; until the developer runs out of money or abandons the project.</p>
+  <p>Under the FREEDOM Act:</p>
+  <ol>
+    <li>Penalties start accruing: $1,000 to $100,000 per day.</li>
+    <li>The project sponsor can petition a court to appoint a qualified contractor to finish the work.</li>
+    <li>Courts must decide within 120 days.</li>
+    <li>Prevailing sponsors recover attorney fees.</li>
+    <li>All of this feeds into GAO reporting on agency compliance.</li>
+  </ol>
+  <p>Commons will argue that a determined political appointee will absorb the $100K/day fine. Perhaps. But that money comes out of the agency&rsquo;s general management account &mdash; less money for every other function the agency performs. Career staff notice when their budgets evaporate. Inspectors General notice. Appropriations committees notice. The mechanism isn&rsquo;t perfect, but it introduces <em>friction</em> where currently there is none. And in bureaucracies, friction is the only force that matters.</p>
+</div>
+
+<div class="speech commons" id="r2-commons">
+  <div class="speech-name">Commons</div>
+  <p>Madison&rsquo;s enforcement structure has a design flaw so fundamental I&rsquo;m surprised it hasn&rsquo;t attracted more attention.</p>
+  <p>The civil penalties come from the agency&rsquo;s general management budget. Think carefully about who that actually punishes. Not the political appointee who ordered the obstruction. Not the White House. Not the Secretary. <strong>The career staff</strong> &mdash; by reducing the resources available for all agency operations, including, perversely, permitting itself.</p>
+  <p>The death spiral is designed into the statute. An understaffed agency can&rsquo;t meet deadlines. The penalty for missing deadlines is losing budget. Less budget means less capacity to meet deadlines. Which triggers more penalties. Which reduces the budget further. You&rsquo;ve created a mechanism that converts resource constraints into resource destruction.</p>
+  <p>The Niskanen Center and Brookings both identify inadequate agency resources as the binding constraint on permitting speed. The FREEDOM Act&rsquo;s response to the binding constraint is to make it tighter.</p>
+  <p>Now compare the CERTAIN Act&rsquo;s approach to the capacity problem:</p>
+  <ul>
+    <li>Every 5 years, agencies must report on permitting capacity by state and region.</li>
+    <li>OPM must develop plans to increase personnel where shortfalls exist.</li>
+    <li>Agencies receive direct hire authority for permitting positions.</li>
+    <li>Authorization of appropriations: &ldquo;such sums as is necessary.&rdquo;</li>
+  </ul>
+  <p>The analogy that clarifies everything is the FDA. Before PDUFA, drug reviews took 30+ months. After PDUFA, standard reviews take 10 months. That transformation didn&rsquo;t happen because Congress fined the FDA for being slow. It happened because PDUFA gave the FDA the <em>resources</em> to be fast. The right model isn&rsquo;t penalties for delay &mdash; it&rsquo;s a dedicated funding mechanism where developers pay for speed and agencies are resourced to deliver it.</p>
+</div>
+
+<div class="speech marshall" id="r2-marshall">
+  <div class="speech-name">Marshall</div>
+  <p>You&rsquo;re both half right, which in policy terms means you&rsquo;re both entirely wrong.</p>
+  <p>Madison is correct that enforcement without consequences is theater. The international evidence confirms it. Brazil has statutory timelines for environmental licensing. IBAMA routinely misses them. No consequences and no resources &mdash; that&rsquo;s the CERTAIN Act&rsquo;s vulnerability in one sentence.</p>
+  <p>Commons is correct that penalties drawn from agency budgets are perverse. You cannot starve a horse and then whip it for not running.</p>
+  <p>But you&rsquo;re both missing the most powerful enforcement mechanism in the international toolkit, and it&rsquo;s not penalties or process. It&rsquo;s <strong>deemed approval.</strong></p>
+  <p>The FCC has operated on this principle since 2014 under Section 6409(a). If a local government doesn&rsquo;t act on a wireless facility modification within 60 days, the application is automatically deemed granted. No court action. No penalties. No contractor substitution. The applicant sends a letter. The permit exists.</p>
+  <p>California&rsquo;s Permit Streamlining Act has worked this way since 1977 &mdash; nearly fifty years. The sky has not fallen.</p>
+  <p>The CZMA already provides deemed concurrence in existing federal law: if a state doesn&rsquo;t respond to a consistency determination within six months, concurrence is conclusively presumed.</p>
+  <p>Deemed approval is the only enforcement mechanism that is truly self-executing. Penalties can be absorbed. Contractor substitution can be sabotaged. Administrative review can be circular. But if the permit simply approves itself when the clock expires, the agency has exactly one option: act on time.</p>
+  <p>The answer is straightforward, and it combines all three directions: fund the agencies properly (the CERTAIN Act&rsquo;s instinct), create real consequences for deliberate obstruction (the FREEDOM Act&rsquo;s instinct), and make the ultimate backstop automatic approval (neither bill&rsquo;s approach, but proven in both U.S. and international law).</p>
+</div>
+
+<!-- ============================================ -->
+<!-- ROUND 3 -->
+<!-- ============================================ -->
+
+<div class="round-header" id="round3">
+  <div class="round-label">Round 3</div>
+  <div class="round-question">Do these bills sacrifice environmental review for speed?</div>
+</div>
+
+<div class="speech commons" id="r3-commons">
+  <div class="speech-name">Commons</div>
+  <p>This is the question that determines whether any of this becomes law, because here is the political reality: <strong>environmental groups can kill a permitting bill.</strong> They helped defeat the Manchin deal in 2022, alongside opposition from both parties. They weakened the FRA. They will do it again if a bill appears to gut NEPA.</p>
+  <p>The CERTAIN Act is designed to survive this test. Environmental groups, labor unions, and clean energy companies have rallied behind it because it doesn&rsquo;t weaken environmental review &mdash; it makes environmental review faster and more predictable.</p>
+  <p>Now examine the FREEDOM Act&rsquo;s environmental provisions and tell me they don&rsquo;t make environmental groups reach for their litigation folders:</p>
+  <ol>
+    <li><strong>The &ldquo;limited vacatur&rdquo; standard.</strong> Courts can only vacate permits if there is &ldquo;specific, imminent, and irreparable environmental harm.&rdquo; This standard is nearly impossible to meet. An agency could rubber-stamp a deeply flawed EIS, and courts couldn&rsquo;t undo the permit unless the project was already causing immediate, provable damage.</li>
+    <li><strong>Categorical exclusions for 5-acre sites.</strong> Five acres of &ldquo;previously disturbed land&rdquo; sounds small until you realize projects can be segmented. A developer splits a large project into sub-5-acre parcels, each qualifying for categorical exclusion. No NEPA review.</li>
+    <li><strong>Court-approved contractor substitution.</strong> The entity being reviewed selects the entity conducting the review. This is a textbook conflict of interest.</li>
+  </ol>
+  <p>If environmental groups perceive these provisions as gutting NEPA, the bill dies. And then nobody gets any reform at all. You can be right on the merits and dead in the water politically &mdash; ask anyone who worked on comprehensive immigration reform.</p>
+</div>
+
+<div class="speech madison" id="r3-madison">
+  <div class="speech-name">Madison</div>
+  <p>The environmental groups endorsing the CERTAIN Act are endorsing it precisely because it doesn&rsquo;t threaten their litigation model. That&rsquo;s not a virtue. It&rsquo;s a tell.</p>
+  <p>The current system gives environmental plaintiffs enormous leverage. They can challenge a permit years after issuance. They can argue that any deficiency in the EIS &mdash; however minor &mdash; requires vacating the entire permit. They can wield the threat of litigation to extract concessions unrelated to environmental protection and entirely related to organizational fundraising and political influence.</p>
+  <p>The FREEDOM Act&rsquo;s &ldquo;limited vacatur&rdquo; standard doesn&rsquo;t gut environmental review. It introduces proportionality. If the flaw is minor and the environmental impact manageable, the court orders the agency to fix the flaw while the project continues, rather than vacating the entire permit and sending the developer back to year zero.</p>
+  <p>Here&rsquo;s the question Commons doesn&rsquo;t want to answer: <strong>what is the environmental cost of delay?</strong> Every year a clean energy project sits in permitting purgatory is a year the coal plant or gas plant it would have replaced keeps running. The average EIS takes 3.8 years (CEQ 2025 data; the 2010&ndash;2018 mean was 4.5 years). That&rsquo;s 3.8 years of carbon emissions, 3.8 years of particulate matter, 3.8 years of public health damage &mdash; all in the name of environmental protection.</p>
+  <p>Environmental groups that block permitting reform in the name of environmental protection are causing more environmental harm than the reforms they&rsquo;re blocking. That&rsquo;s not a talking point. It&rsquo;s arithmetic.</p>
+</div>
+
+<div class="speech marshall" id="r3-marshall">
+  <div class="speech-name">Marshall</div>
+  <p>This round crystallizes the core tension, so let me name it precisely.</p>
+  <p>Both of you are arguing within a frame the international evidence has already moved past. The question &ldquo;does environmental review happen?&rdquo; is the wrong question. The right question is: <strong>at what level does environmental review happen?</strong></p>
+  <p>The EU&rsquo;s renewables acceleration areas don&rsquo;t eliminate environmental review. They relocate it &mdash; from the project level to the plan level. A Strategic Environmental Assessment covers the entire acceleration area: species impacts, habitat analysis, water resources, cultural heritage, all analyzed once for the area as a whole. Individual projects within that area then face a simplified screening, not a full EIA.</p>
+  <p>The results are counterintuitive. When environmental review moves to the plan level:</p>
+  <ul>
+    <li>It&rsquo;s more comprehensive (captures cumulative impacts across all projects in the area)</li>
+    <li>It&rsquo;s more efficient (done once, not repeated for each project)</li>
+    <li>It actually <em>improves</em> environmental outcomes (because mitigation is designed at landscape scale rather than project scale)</li>
+    <li>And it&rsquo;s dramatically faster for individual projects (which &ldquo;tier&rdquo; off the programmatic analysis)</li>
+  </ul>
+  <p>(I want to note: this isn&rsquo;t some radical European import. The U.S. already has programmatic EIS authority under existing law. BLM used it for solar in 2012. Washington State used it for wind, solar, and green hydrogen. We just almost never use it &mdash; which means the most important structural reform these bills could mandate is one that requires no new legal authority at all.)</p>
+  <p>Neither bill mandates programmatic review. Neither creates pre-permitted zones. Neither even acknowledges that <em>where</em> environmental review happens might matter more than <em>how fast</em> it happens at the project level.</p>
+  <p>If the goal is to protect environmental review AND accelerate permitting, the answer is not faster project-level review (the CERTAIN Act&rsquo;s approach) or weaker consequences for flawed project-level review (the FREEDOM Act&rsquo;s approach). The answer is doing the review at the right level. The EU figured this out. We&rsquo;re still arguing about whether the project-level review should take two years or four.</p>
+</div>
+
+<!-- ============================================ -->
+<!-- ROUND 4 -->
+<!-- ============================================ -->
+
+<div class="round-header" id="round4">
+  <div class="round-label">Round 4</div>
+  <div class="round-question">Can either bill survive a hostile administration?</div>
+</div>
+
+<div class="speech madison" id="r4-madison">
+  <div class="speech-name">Madison</div>
+  <p>This is my strongest ground, and I suspect both of you know it.</p>
+  <p>The CERTAIN Act gives CEQ a central mediation role. Here is what happens when that design choice encounters reality.</p>
+  <p>2020: Trump 1.0 CEQ substantially revises NEPA regulations. 2021&ndash;2024: Biden CEQ revises them again. January 2026: Trump 2.0 CEQ rescinds them entirely. Two federal courts find CEQ likely never had binding regulatory authority in the first place.</p>
+  <p>This is the entity the CERTAIN Act trusts to &ldquo;mediate disputes&rdquo; and &ldquo;provide specific direction.&rdquo; And it makes that mediation <strong>non-judicially-reviewable.</strong> You cannot challenge CEQ&rsquo;s biased mediation in court.</p>
+  <p>Play this forward. A developer&rsquo;s project is being slow-walked by Interior. The developer invokes the CERTAIN Act&rsquo;s mediation provision. CEQ &mdash; which reports to the same President who said &ldquo;we&rsquo;re not going to approve solar or wind&rdquo; &mdash; conducts mediation. CEQ sides with Interior and issues &ldquo;specific direction&rdquo; to resolve the dispute&hellip; by requiring additional analysis that takes another two years. The developer can&rsquo;t challenge this in court because the statute exempts CEQ mediation from judicial review.</p>
+  <p>You&rsquo;ve just given the adversary a veto dressed up as mediation.</p>
+  <p>The FREEDOM Act avoids this entirely. Its enforcement mechanisms run through the courts &mdash; an independent branch of government. The single most important feature of any permitting reform is <strong>structural independence from the executive branch.</strong> The FREEDOM Act has it. The CERTAIN Act has a CEQ-shaped hole where it should be.</p>
+</div>
+
+<div class="speech commons" id="r4-commons">
+  <div class="speech-name">Commons</div>
+  <p>Madison&rsquo;s critique of the CEQ mediation role is legitimate, and I&rsquo;ll concede the point directly: relying on CEQ for dispute resolution is a design vulnerability. I&rsquo;ve argued privately that FPISC would be a better choice, and the research supports that conclusion.</p>
+  <p>But the idea that courts are a silver bullet deserves scrutiny.</p>
+  <p>The FREEDOM Act routes everything through the judiciary. That creates three problems:</p>
+  <p><strong>First, courts are slow.</strong> The 120-day decision deadline is aspirational, not mandatory. Federal courts set their own dockets. The Supreme Court has repeatedly held that Congress cannot dictate the pace of judicial proceedings.</p>
+  <p><strong>Second, courts are expensive.</strong> Even with fee-shifting for prevailing parties, you need to <em>get</em> to prevailing status. For a small developer or a community energy project, the litigation costs are prohibitive before the merits are ever reached. The FREEDOM Act&rsquo;s $5 million minimum for the de-risking fund excludes precisely the projects most vulnerable to government obstruction.</p>
+  <p><strong>Third, courts create precedent, and precedent cuts both ways.</strong> Win the wrong case on the wrong facts, and you&rsquo;ve created a roadmap for circumvention that lasts decades.</p>
+  <p>Is the CERTAIN Act sufficient without better enforcement teeth? No. I concede that. The CERTAIN Act needs graduated penalties and some form of deemed-approved backstop. But process architecture is the foundation. Enforcement teeth without process architecture is just angry litigation. Process architecture with enforcement teeth is a functioning system.</p>
+</div>
+
+<div class="speech marshall" id="r4-marshall">
+  <div class="speech-name">Marshall</div>
+  <p>Let me cut through the theoretical debate with a historical observation that should trouble both of you.</p>
+  <p>The United States has had statutory permitting deadlines before. Section 404 of the Clean Water Act has deadlines. NEPA has aspirational timelines. FAST-41 set a two-year target. Agencies routinely miss all of them. The Georgetown Environmental Law Review analysis found that FAST-41 may have actually increased average processing time for some projects.</p>
+  <p>The pattern is consistent: <strong>statutory deadlines without self-executing consequences are performative legislation.</strong></p>
+  <p>The FREEDOM Act&rsquo;s penalties are better, but still absorbable by a determined administration. A hundred thousand dollars a day sounds impressive until you remember that a single project can absorb nearly $1 billion in impairments from government action (per Equinor&rsquo;s Q2 2025 reporting on Empire Wind). At $100K/day, you&rsquo;d need 27 years of continuous penalties to match the economic damage of one stop-work order.</p>
+  <p>Only two mechanisms in the international evidence have proven truly administration-proof:</p>
+  <p><strong>1. Deemed approval.</strong> Germany&rsquo;s Wind-an-Land-Gesetz provides that if a state fails to meet its wind land dedication target, turbines automatically gain &ldquo;privileged status&rdquo; under the Building Code, overriding local restrictions. No court needed. No penalty needed. The law simply changes the default.</p>
+  <p><strong>2. Property rights framing.</strong> When permits are vested property rights, the Fifth Amendment&rsquo;s Takings Clause provides constitutional protection that no future Congress or administration can override without paying compensation.</p>
+  <p>The strongest possible reform would combine all three: deemed approval as the default when deadlines expire, vested property rights upon permit issuance, and the FREEDOM Act&rsquo;s financial remedies as an additional deterrent layer. Neither bill does all three. The question for Congress is whether to aim for what&rsquo;s politically comfortable or what actually works.</p>
+</div>
+
+<!-- ============================================ -->
+<!-- ROUND 5 -->
+<!-- ============================================ -->
+
+<div class="round-header" id="round5">
+  <div class="round-label">Round 5</div>
+  <div class="round-question">If you could write one bill that incorporates the best of both approaches, what would it look like?</div>
+</div>
+
+<div class="speech madison" id="r5-madison">
+  <div class="speech-name">Madison</div>
+  <p>I&rsquo;ll start with what the CERTAIN Act gets right, and I&rsquo;ll be generous because honesty demands it.</p>
+  <p><strong>The process architecture is good.</strong> The end-to-end pipeline from application to determination &mdash; 60-day completeness, deemed-complete backstop, concurrent review, single environmental document, jurisdiction waiver for non-participating agencies, prohibition on new information requests after initial completeness &mdash; is well-designed. The FREEDOM Act doesn&rsquo;t have this granularity, and it should. I&rsquo;d import the entire CERTAIN Act Section (b) through (h) process framework.</p>
+  <p><strong>The agency capacity provisions are necessary.</strong> Direct hire authority, capacity reporting, and a statutory hook for appropriations address the root cause of delay when the cause isn&rsquo;t political obstruction.</p>
+  <p><strong>The broad coalition matters.</strong> A bill that passes with union and environmental group support is more durable than one that passes on party lines. I accept this.</p>
+  <p>Now here is what the merged bill must have from the FREEDOM Act:</p>
+  <ol>
+    <li><strong>Financial consequences for missed deadlines.</strong> Not from agency general budgets &mdash; I&rsquo;ll accept that critique. Directed to a segregated Permitting Capacity Fund.</li>
+    <li><strong>The de-risking insurance fund.</strong> Modified with risk-adjusted premiums and an independent board, not DOE administration.</li>
+    <li><strong>Court-approved contractor substitution</strong> with a statutory duty of agency cooperation, enforceable by contempt.</li>
+    <li><strong>Expedited judicial review</strong> with 120-day court decision targets and attorney fee recovery.</li>
+    <li><strong>&ldquo;Just compensation&rdquo;</strong> for unlawful stop-work orders or revocations.</li>
+    <li><strong>The limited vacatur standard.</strong> A proportionality standard &mdash; remand without vacatur unless there&rsquo;s actual imminent harm &mdash; is reasonable.</li>
+  </ol>
+  <p>And from Marshall&rsquo;s international evidence:</p>
+  <ol start="7">
+    <li><strong>Deemed approval</strong> as the ultimate backstop when deadlines expire.</li>
+    <li><strong>Mandatory programmatic EIS</strong> for major technology categories and regions, with automatic categorical exclusions for projects within programmatically-reviewed areas.</li>
+    <li><strong>One-stop-shop coordination</strong> with a single lead agency issuing a consolidated authorization.</li>
+  </ol>
+</div>
+
+<div class="speech commons" id="r5-commons">
+  <div class="speech-name">Commons</div>
+  <p>I appreciate Madison&rsquo;s concessions. Let me reciprocate with equal candor.</p>
+  <p><strong>The CERTAIN Act needs enforcement teeth.</strong> I&rsquo;ve spent this debate defending the process architecture because I believe it&rsquo;s the foundation, but a foundation without a building is a slab of concrete. The evidence is clear: deadlines without consequences are performative. I accept the need for graduated financial consequences.</p>
+  <p><strong>CEQ cannot be the mediator.</strong> The debate has convinced me on this point. CEQ&rsquo;s track record is too volatile, its independence too compromised. FPISC is the right alternative.</p>
+  <p><strong>Some form of deemed approval is necessary.</strong> I resist it for complex environmental reviews, but I accept it for: (a) routine authorizations, (b) consulting agency concurrences, (c) application completeness determinations, and (d) any authorization where the agency&rsquo;s own delay is the sole cause of the missed deadline.</p>
+  <p><strong>The de-risking fund concept is valuable</strong> and I was wrong to dismiss it. The $5M floor should be lowered to $1M to include community energy projects.</p>
+  <p>Now, here are my non-negotiable requirements for any merged bill:</p>
+  <ol>
+    <li><strong>Environmental review must actually happen.</strong> Streamlined, yes. Concurrent, yes. Programmatic where possible, yes. But not eliminated.</li>
+    <li><strong>The limited vacatur standard must be modified.</strong> Vacatur must remain available when there is &ldquo;substantial likelihood of significant environmental harm.&rdquo;</li>
+    <li><strong>Technology neutrality is absolutely non-negotiable.</strong> Republicans must be willing to protect solar and wind. Democrats must be willing to protect pipelines and LNG. That&rsquo;s the deal.</li>
+    <li><strong>Worker and community protections.</strong> Community benefit-sharing, prevailing wage, binding tribal consultation timelines.</li>
+    <li><strong>Sunset and reauthorization.</strong> Like PDUFA, performance goals should be renegotiated every five years.</li>
+  </ol>
+</div>
+
+<div class="speech marshall" id="r5-marshall">
+  <div class="speech-name">Marshall</div>
+  <p>Both of you have moved substantially toward synthesis, and it&rsquo;s been instructive to watch. Let me offer the architecture that incorporates your concessions and adds the structural elements the international evidence demands.</p>
+  <p><strong>The bill should have ten titles:</strong></p>
+  <p><strong>Title I: Permit Certainty.</strong> Permits are presumed valid (patent law model). Revocable only under five narrow exceptions with clear-and-convincing evidence. Anti-vacatur. Federal vesting upon complete application filing (Washington State model). Explicit preemption of future executive orders.</p>
+  <p><strong>Title II: Process Framework.</strong> The CERTAIN Act&rsquo;s entire pipeline, strengthened with the FREEDOM Act&rsquo;s binding deadlines (90 days / 1 year / 2 years) applied as non-tollable clocks (EU model). One-stop-shop coordination with a single lead agency (Denmark model).</p>
+  <p><strong>Title III: Graduated Environmental Review.</strong> Size-based tiering: under 5 MW on previously disturbed land gets permit-by-right with notification only. Under 20 MW: categorical exclusion. Under 100 MW: abbreviated EA. Only the largest projects require full EIS. Anti-segmentation provisions prevent gaming.</p>
+  <p><strong>Title IV: Programmatic Review and Pre-Permitted Zones.</strong> Mandatory programmatic EIS for each major technology and region within 3 years. &ldquo;Energy Acceleration Zones&rdquo; where projects receive deemed approval within 90 days (solar) or 12 months (wind/transmission). The EU Renewables Acceleration Area model, adapted for U.S. law.</p>
+  <p><strong>Title V: Enforcement.</strong> Graduated penalties directed to a segregated Permitting Capacity Fund. Deemed approval as the ultimate backstop. Constructive exhaustion (FOIA model). Fee-shifting. Mandatory IG triggers. Anti-circumvention clause making any action designed to defeat the statute void <em>ab initio</em>.</p>
+  <p><strong>Title VI: De-Risking.</strong> Insurance fund with risk-adjusted premiums, administered by an independent board. $1M minimum entry. Government performance bond on revocation. Court of Federal Claims jurisdiction.</p>
+  <p><strong>Title VII: Economic Protections.</strong> Tax credit vesting. Anti-fee-weaponization. Interconnection deemed approval. Tariff stability for contracted components.</p>
+  <p><strong>Title VIII: Permit Shield.</strong> Projects in compliance with permit terms are deemed in compliance with BGEPA, MBTA, ESA for impacts within the scope of the permit.</p>
+  <p><strong>Title IX: Agency Capacity.</strong> PDUFA-style user fees funding dedicated permitting staff. Performance goals negotiated every five years. Permitting Capacity Fund seeded with $200M.</p>
+  <p><strong>Title X: Accountability.</strong> GAO annual survey. Public dashboard. FPISC as independent dispute resolution, with judicial review of mediation outcomes.</p>
+  <p>Titles I, II, V, and IX are the foundation. Titles III, IV, and VIII are the accelerators. Titles VI, VII, and X are the safeguards. Pass the foundation in 2026. Build toward the full framework over subsequent reauthorizations.</p>
+</div>
+
+<!-- ============================================ -->
+<!-- CLOSINGS -->
+<!-- ============================================ -->
+
+<h2 id="closings">Closing Statements</h2>
+
+<div class="speech madison">
+  <div class="speech-name">Madison</div>
+  <p>Marshall&rsquo;s ten-title framework is the most comprehensive permitting reform proposal I&rsquo;ve encountered. I endorse it with two emphases.</p>
+  <p>First, <strong>deemed approval must be in the foundation, not deferred.</strong> If you pass Titles I, II, V, and IX without deemed approval, you&rsquo;ve created a system that&rsquo;s better-resourced and better-organized but still defenseless against deliberate stalling. Deemed approval is the only mechanism that is truly self-executing and administration-proof.</p>
+  <p>Second, <strong>the limited vacatur standard matters more than Commons thinks.</strong> The current regime &mdash; where any NEPA deficiency can result in permit vacatur &mdash; creates an asymmetric litigation weapon. Project opponents need to find <em>one flaw</em> to kill a project. Project sponsors need to be <em>perfect</em> to survive. That asymmetry is the entire game. A proportionality standard &mdash; remand without vacatur as the default, vacatur only for substantial likelihood of significant harm &mdash; is a compromise that should be acceptable to anyone arguing in good faith.</p>
+  <p>The FREEDOM Act&rsquo;s enduring contribution is that it was written by people who understand what it means to have a billion dollars at risk and the government as your adversary. That perspective must be at the center of any reform. Process architecture is necessary but insufficient. You need weapons in addition to blueprints.</p>
+</div>
+
+<div class="speech commons">
+  <div class="speech-name">Commons</div>
+  <p>I&rsquo;ll close with something that hasn&rsquo;t been said enough in this debate: <strong>the bipartisan coalition is the reform.</strong> Not a means to the reform. Not a political tactic for passing the reform. The coalition <em>is</em> the reform.</p>
+  <p>Any permitting law can be amended or repealed by a future Congress. Any executive order can be issued by a future President. The only thing that makes a law durable is <em>broad political support across multiple administrations.</em> The NEPA framework survived from 1978 to 2020 &mdash; forty-two years &mdash; because it had bipartisan support. The moment that support fractured, the regulations started whipsawing every four years.</p>
+  <p>A permitting reform that passes on party lines will last exactly until the next election. A reform that passes with unions and environmental groups and industry and both parties will last a generation.</p>
+  <p>Technology neutrality is what makes the coalition possible. Republicans protect wind and solar; Democrats protect pipelines and LNG. Nobody likes it. That&rsquo;s how you know the deal is fair.</p>
+</div>
+
+<div class="speech marshall">
+  <div class="speech-name">Marshall</div>
+  <p>My closing is simple.</p>
+  <p>The United States takes 2 to 10 years to permit an energy project. The Netherlands&rsquo; statutory decision window is 8 weeks to 6 months. Denmark&rsquo;s one-stop-shop processes offshore wind in 24 to 36 months. South Korea deems 28 permits granted simultaneously. The EU imposes non-pausable deadlines and has declared renewables to be of overriding public interest.</p>
+  <p>These are not authoritarian regimes. They are democracies with strong environmental protections, independent judiciaries, and rule of law. They have simply designed systems that work.</p>
+  <p>The United States has not.</p>
+  <p>The uncomfortable truth is this: <strong>the American permitting system is not broken despite good intentions. It is working exactly as designed &mdash; as a veto machine that makes it easy to block and hard to build.</strong> Fixing it requires not incremental reform but structural redesign. The international evidence tells us what that redesign looks like. The question is whether American politics can accommodate it.</p>
+  <p>The window is open. Not wide. Not for long. But open.</p>
+</div>
+
+<!-- ============================================ -->
+<!-- SYNTHESIS -->
+<!-- ============================================ -->
+
+<h2 id="synthesis">Synthesis</h2>
+
+<h3 id="tensions">Core Tensions</h3>
+<p>Five rounds of debate, and five irreducible tensions remain. Not disagreements that cleverer drafting could resolve &mdash; genuine tradeoffs that legislators must navigate with their eyes open.</p>
+
+<div class="tension-card">
+  <h4>Tension 1: Enforcement vs. Capacity</h4>
+  <p><strong>The tension:</strong> Strong enforcement mechanisms punish agencies for being slow. But the primary cause of agency slowness is inadequate resources, not bad faith. Penalizing an understaffed agency for missing deadlines is like fining a hospital for wait times while cutting its budget.</p>
+  <p class="subhead">Where the debaters landed</p>
+  <p>All three agree that penalties must be directed to a segregated Permitting Capacity Fund (not extracted from agency budgets), and that a PDUFA-style user fee system is the right structural answer. The FREEDOM Act&rsquo;s penalty-from-agency-budgets approach is rejected as counterproductive. The CERTAIN Act&rsquo;s &ldquo;such sums as is necessary&rdquo; authorization is accepted as insufficient.</p>
+  <p class="subhead">The synthesis</p>
+  <p><strong>Fund first, enforce second.</strong> Build the capacity, then hold agencies accountable for using it. But do <em>both</em> &mdash; capacity alone creates a well-funded agency with no incentive to move quickly. Enforcement alone creates a broke agency with every incentive but no ability.</p>
+</div>
+
+<div class="tension-card">
+  <h4>Tension 2: Environmental Review &mdash; Speed vs. Integrity</h4>
+  <p><strong>The tension:</strong> Faster environmental review increases the risk that harmful projects proceed without adequate analysis. Slower review delays projects that would displace fossil fuels. Both costs are real.</p>
+  <p class="subhead">Where the debaters landed</p>
+  <p>All three agree that moving environmental review from the project level to the plan level (programmatic EIS, pre-permitted zones, EU-style acceleration areas) is the structural solution. Size-based tiering matches regulatory burden to actual environmental risk.</p>
+  <p class="subhead">The synthesis</p>
+  <p><strong>The question is not &ldquo;fast or thorough?&rdquo; It&rsquo;s &ldquo;at what level does review happen?&rdquo;</strong> Plan-level review can be both thorough and fast at the project level. The EU has demonstrated this at scale.</p>
+</div>
+
+<div class="tension-card">
+  <h4>Tension 3: Judicial vs. Administrative Enforcement</h4>
+  <p><strong>The tension:</strong> Judicial enforcement is structurally independent but slow, expensive, and creates uncertain precedent. Administrative enforcement is faster but vulnerable to political capture.</p>
+  <p class="subhead">The synthesis</p>
+  <p><strong>Layer the enforcement:</strong> (1) self-executing deemed approval for missed deadlines; (2) FPISC mediation for inter-agency disputes (fast, cheap, judicially reviewable); (3) federal court with fee-shifting for deliberate obstruction. The layers operate in sequence, not as alternatives.</p>
+</div>
+
+<div class="tension-card">
+  <h4>Tension 4: Political Passability vs. Policy Adequacy</h4>
+  <p><strong>The tension:</strong> The most effective reforms are the hardest to pass politically. The most passable reforms are the least effective.</p>
+  <p class="subhead">The synthesis</p>
+  <p>This is a genuine strategic judgment. The strongest position is probably <strong>Madison&rsquo;s on substance and Commons&rsquo; on sequencing:</strong> pass the most aggressive bill the coalition can sustain, but design it with built-in expansion triggers (like PDUFA reauthorization) so it gets stronger over time rather than weaker.</p>
+</div>
+
+<div class="tension-card">
+  <h4>Tension 5: Technology Neutrality vs. Political Reality</h4>
+  <p><strong>The tension:</strong> Technology neutrality means protecting projects each side despises: Republicans protecting wind and solar, Democrats protecting pipelines and LNG terminals.</p>
+  <p class="subhead">The synthesis</p>
+  <p><strong>Complete consensus.</strong> Technology neutrality is non-negotiable. The bipartisan durability test: the law must constrain both a pro-fossil and a pro-renewable administration equally. Nobody likes it. That&rsquo;s how you know the deal is fair.</p>
+</div>
+
+<hr class="section-rule">
+
+<h3 id="consensus">Core Areas of Consensus</h3>
+<p>Despite fierce disagreement on tactics, all three debaters converge on eight points:</p>
+
+<div class="consensus-card">
+  <h4>8 Points of Agreement</h4>
+  <ol>
+    <li><strong>The status quo is indefensible.</strong> An administration that openly declares it won&rsquo;t approve solar or wind while the country takes 2&ndash;10 years to permit projects that other democracies approve in 8 weeks to 24 months is not a policy disagreement. It is a policy failure of historic magnitude.</li>
+    <li><strong>Neither bill alone is sufficient.</strong> The CERTAIN Act&rsquo;s process architecture plus the FREEDOM Act&rsquo;s enforcement mechanisms, corrected for each bill&rsquo;s weaknesses, is the minimum viable reform.</li>
+    <li><strong>CEQ cannot be trusted.</strong> Any permitting reform that relies on CEQ for dispute resolution is building on sand. FPISC is the better alternative, with judicial review of outcomes.</li>
+    <li><strong>Agency capacity is the binding constraint</strong> on non-political delay. A PDUFA-style user fee system, dedicated to permitting staff and tied to negotiated performance goals, is the structural answer.</li>
+    <li><strong>Deemed approval must be in the toolkit.</strong> It is the only truly self-executing enforcement mechanism. It should be phased in, starting with routine authorizations and consulting agency concurrences.</li>
+    <li><strong>Environmental review should move to the plan level</strong> where possible. Programmatic EIS, pre-permitted zones, and size-based tiering match review intensity to actual environmental risk.</li>
+    <li><strong>Technology neutrality is non-negotiable.</strong> It is the price of admission for bipartisan support and the guarantee of durability across administrations.</li>
+    <li><strong>The international evidence shows this is solvable.</strong> Denmark, the Netherlands, the EU, South Korea, Australia, and others have built permitting systems that are both fast and environmentally responsible. The mechanisms are proven.</li>
+  </ol>
+</div>
+
+<hr class="section-rule">
+
+<h3 id="ultimate">The Ultimate Question</h3>
+
+<div class="final-card">
+  <p><strong>Is the permitting crisis a design problem or a political will problem?</strong></p>
+  <p>If it&rsquo;s a design problem &mdash; the system simply lacks the right architecture &mdash; then legislative reform can fix it. Build better process, add enforcement teeth, fund the agencies, and the system works.</p>
+  <p>If it&rsquo;s a political will problem &mdash; powerful interests benefit from a broken system and will subvert any reform &mdash; then no legislation is sufficient. The veto machine will find new veto points. The obstruction playbook will evolve.</p>
+  <p>The honest answer is: <strong>it&rsquo;s both.</strong> And the honest legislative response is: design the best possible system (addressing the design problem) while building in the layered defenses, self-executing mechanisms, and private enforcement ecosystem that make the system resistant to political subversion (addressing the will problem).</p>
+  <p>That&rsquo;s what the ten-title framework attempts. Whether it succeeds depends on whether the current crisis is severe enough to overcome the inertia, the interests, and the institutional resistance that have kept the United States at the back of the pack for decades.</p>
+  <p><strong>The window is open. Not wide. Not for long. But open.</strong></p>
+</div>
+
+<p style="margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 14px; color: var(--muted); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+  Debate generated February 2026. Based on analysis of the FREEDOM Act (H.R.7329), the CERTAIN Act (discussion draft), and comparative international permitting research.
+</p>
+
+</main>
+</div>
+</body>
+</html>
