@@ -116,7 +116,7 @@ Commons will argue that a determined political appointee will absorb the $100K/d
 
 Madison's enforcement structure has a design flaw so fundamental I'm surprised it hasn't attracted more attention.
 
-The civil penalties come from the agency's general management budget. Think carefully about who that actually punishes. Not the political appointee who ordered the obstruction. Not the White House. Not the Secretary. **The career staff** -- by reducing the resources available for all agency operations, including, perversely, permitting itself.
+The civil penalties come from the agency's general management account. Think carefully about who that actually punishes. Not the political appointee who ordered the obstruction. Not the White House. Not the Secretary. **The career staff** -- by reducing the resources available for all agency operations, including, perversely, permitting itself.
 
 The death spiral is designed into the statute. An understaffed agency can't meet deadlines. The penalty for missing deadlines is losing budget. Less budget means less capacity to meet deadlines. Which triggers more penalties. Which reduces the budget further. You've created a mechanism that converts resource constraints into resource destruction.
 
